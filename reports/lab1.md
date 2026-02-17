@@ -57,3 +57,32 @@ index b8adf7e..0af0bb7 100644
 +Сеннов Владимир Николаевич
 \ No newline at end of file
 ```
+
+Коммит изменений:
+```
+git add reports/lab1.md
+git commit -m" change lab1.md"
+```
+
+### Откат изменений
+Откатил изменения через `git restore`, и файл вернул состояние последнего коммита
+
+При удалении в `git status` появилось:
+```
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        deleted:    reports/lab1.md
+```
+git подсказыват, как изменить индекс и как отменить изменения
+
+`git restore` вернул состояние коммита
+
+### Ветвление версий
+
+`git branch` :
+ ```
+lab1-1
+*main(* показывает в какой я ветке)
+```
+При переходе `git checkout lab1-1`, выводится `M       reports/lab1.md`, то есть сообщает о состоянии файлов.
