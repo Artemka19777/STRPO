@@ -36,9 +36,7 @@ git commit -m "commit lab1 README"
 
 `git diff` показало, что конкретно я изменил
 
-Добавил в индекс `git add reports/lab1.md`
-
-теперь `git status` показывает готовность lab1 к коммиту.
+Добавил в индекс `git add reports/lab1.md`. Теперь `git status` показывает готовность lab1 к коммиту.
 
 ` git diff README.md`
 
@@ -74,9 +72,7 @@ Changes not staged for commit:
   (use "git restore <file>..." to discard changes in working directory)
         deleted:    reports/lab1.md
 ```
-git подсказыват, как изменить индекс и как отменить изменения
-
-`git restore` вернул состояние коммита
+git подсказыват, как изменить индекс и как отменить изменения. `git restore` вернул состояние коммита
 
 ### Ветвление версий
 
@@ -117,3 +113,74 @@ git push -u origin main
 Скопировал удаленный репозиторий `git clone`, через SSH токен и получил те же файлы
 
 `git fetch` скачал измения, но не применил их.
+
+`git pull` применил и слил изменения.
+
+### История изменений
+
+Merge: 5a0031d 58f88ce
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 16:29:55 2026 +0300
+
+    pull remote repository
+
+commit 58f88ce7d33d4ac6f417266d57cb8e8473ef6d2b
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 16:14:05 2026 +0300
+
+    commit in clone repository
+
+commit 5a0031d09afcd2fe60a248159cf30d7755b84922
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 16:12:45 2026 +0300
+
+    add second section
+
+commit ecfc012c5f7382ff3f23007f8781f1adb73a0f0a
+Merge: 4db72d1 1a3fd44
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 15:41:28 2026 +0300
+
+    merge lab1-1 with main
+
+commit 1a3fd445f506544e9eef21549c3b1aa7a989fafc
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 15:37:19 2026 +0300
+
+    change for merge
+
+commit 4db72d1784d9da052be27723b576fbae81e8f2f3
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 15:35:04 2026 +0300
+
+    rename heading
+
+commit 0c3899bf60dd036c3c53467173a2daab1493b946
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 15:30:29 2026 +0300
+
+    commit in lab1
+
+commit a34b16c0f0c3a30e5af237786739f232218b1794
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 15:11:51 2026 +0300
+
+    commit in new branch(lab1-1)
+
+commit c819abb1003ca57766819dee850de8e6fc030235
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 11:16:57 2026 +0300
+
+     change lab1.md
+
+commit 7f7258f8e87fd1ca76d8a2d6423deaba31bc6531
+Author: Artem <artem.epp@gmail.com>
+Date:   Tue Feb 17 10:54:22 2026 +0300
+
+    commit lab1 README
+
+commit 525e94656fa67e5a28c27e215cb9f98640c04514
+Author: Artem <artem.epp@gmail.com>
+Date:   Mon Feb 16 23:27:34 2026 +0300
+
+    first commit
