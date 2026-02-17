@@ -26,3 +26,34 @@ git config --global user.email "artem.epp@gmail.com"
 git add README.md reports/lab1.md
 git commit -m "commit lab1 README"
 ```
+
+### Отслежавание состояние кода
+
+`git status` : Вывод состояния рабочего каталога
+`git diff`: Вывод разницы между коммитами, изменениями
+
+`git status` показывает, что я нахожусь в ветке main и что я изменил файл lab1.  
+
+`git diff` показало, что конкретно я изменил
+
+Добавил в индекс `git add reports/lab1.md`
+
+теперь `git status` показывает готовность lab1 к коммиту.
+
+` git diff README.md`
+
+Вывод: 
+```
+diff --git a/README.md b/README.md
+index b8adf7e..0af0bb7 100644
+--- a/README.md
++++ b/README.md
+@@ -6,3 +6,6 @@
+ ## Студент
+ Эпп Артём Андреевич 
+ Группа: 5130201/50302
++
++## Преподаватель 
++Сеннов Владимир Николаевич
+\ No newline at end of file
+```
