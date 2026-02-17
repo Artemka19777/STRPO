@@ -112,3 +112,8 @@ Automatic merge failed; fix conflicts and then commit the result.
 git remote add origin
 git push -u origin main
 ```
+### Синхронизация с удаленным репозиторием
+
+Скопировал удаленный репозиторий `git clone`, через SSH токен и получил те же файлы
+
+`git fetch` скачал измения, но не применил их.
