@@ -22,4 +22,4 @@ remote: error: GH006: Protected branch update failed for refs/heads/main.
 error: failed to push some refs to 'github.com:Artemka19777/STRPO.git' 
 ```
 4. удалил коммит `git reset --soft HEAD~1`, `soft` позволяет сохранить изменения, `hard` бы вернул меня в состояние предыдщего коммита.
-5. `git checkout -b pr-test` - создал новую ветку, сделал коммит,
+5. `git checkout -b pr-test` - создал новую ветку, сделал коммит.`git push -u origin pr-test` запушил ветку в удаленный репозитиорий.
