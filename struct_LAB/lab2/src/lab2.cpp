@@ -14,6 +14,13 @@
  * стандартной библиотеки и нужно следовать принципам инкапсуляции.
  */
 
+#include <iostream>
+#include "MyString.hpp"
+#include "BaseFile.hpp"
+#include "cstring"
+
+using namespace std;
+
 int main() {
     /**
      * Задание 1. Массивы объектов класса.
@@ -26,10 +33,15 @@ int main() {
      * Выведите элементы массива на консоль.
      */
 
-    /* {
-        MyString ar[3] = { ... };
-    } */
-
+    {
+        MyString ar[3] = { "Hello", "dsfdf","DSADSAD"};
+        for (int i = 0; i<sizeof(ar)/sizeof(MyString); i++){
+            ar[i].print();
+            cout<<" ";
+        }
+        cout<<'\n';
+        MyString arr[5] = { "Hello", "dsfdf", "DSADSAD" };
+    }
     /**
      * Замените размер массива с 3 на 5, не меняя список инициализаторов.
      *
@@ -37,13 +49,29 @@ int main() {
      * стоять в списке инициализаторов - в вашем случае и в общем случае?
      */
 
+        /*  Для последних 2 значений вызывается конструктор по умолчанию, в моем случае это 
+        MyString::MyString() : data(nullptr), len(0) {}, т.е. пустая строка.
+            В общем случае если конструктор по умолчанию не определен, но при этом существуют другие конструкторы, то компилятор выдаст ошибку.
+        В моем случае const char* str,  const MyString& other(конструктр копирования), в общем случае - значения, которые предусмотрел в конструкторах пользователь 
+        */
+
     /**
      * Задание 1.2. Массив указателей на объекты.
      *
      * Объявите и проинициализируйте массив arPtr из трех указателей на объекты
      * типа MyString. Выведите элементы массива на консоль.
      */
-
+    {
+        MyString* s1= new MyString("Hello");
+        MyString* s2= new MyString("DFSDF");
+        MyString* s3= new MyString("ofpom");
+        MyString* arPtr[3]={s1,s2,s3};
+        for(int i = 0;i<sizeof(arPtr)/sizeof(MyString*);i++){
+            arPtr[i]->print();
+            cout<<" ";
+        }
+        cout<<'\n';
+    }
     /**
      * Задание 2. Простое наследование. Аргументы конструктора, передаваемые в
      * базовый класс.
@@ -88,7 +116,29 @@ int main() {
      *
      * Проверьте работу этого класса.
      */
+    const char* filename = "test";
+    const char* data = "KDNSFJkjdsnfk";
+    {
+        BaseFile f(filename, "w");
+        if (!f.is_open()) {
+            cout << "Не удалось открыть файл\n";
+            return 1;
+        }
+        size_t written = f.write(data, strlen(data));
+        cout << "Записано байт: " << written << "\n";
+    }
+    {
+        char buffer[50] = {0};
+        BaseFile f(filename, "rb"); // открыть для чтения
+        if (!f.is_open()) {
+            cout << "Не удалось открыть файл\n";
+            return 1;
+        }
 
+        size_t k = f.read(buffer, sizeof(buffer));
+        cout << "Прочитано байт: " << k << "\n";
+        cout << "Содержимое: " << buffer << "\n";
+    }
     /**
      * Задание 2.2. Производные классы.
      *
