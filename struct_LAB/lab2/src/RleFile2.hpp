@@ -16,6 +16,9 @@ public:
 
     size_t write(const void* buf, size_t n_bytes) override;
     size_t read(void* buf, size_t max_bytes) override;
+
+    bool seek(long offset);  
+    long tell();  
 };
 
 #endif

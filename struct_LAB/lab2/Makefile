@@ -22,11 +22,34 @@ build/RleFile2.o: src/RleFile2.cpp src/RleFile2.hpp
 	g++ -g -c -o build/RleFile2.o src/RleFile2.cpp 
 
 #Тест
-test: build/test.out
-	./build/test.out
 
-build/test.out: $(object) src/test.cpp
-	g++ -g -o build/test.out $(object) src/test.cpp
+test_base: build/test_base.out
+	./build/test_base.out
+
+build/test_base.out: $(object) test/BaseFileTEST.cpp
+	g++ -g -o build/test_base.out $(object) test/BaseFileTEST.cpp
+
+test_base32: build/test_base32.out
+	./build/test_base32.out
+
+build/test_base32.out: $(object) test/Base32FileTEST.cpp
+	g++ -g -o build/test_base32.out $(object) test/Base32FileTEST.cpp
+
+test_rle: build/test_rle.out
+	./build/test_rle.out
+
+build/test_rle.out: $(object) test/RleFileTEST.cpp
+	g++ -g -o build/test_rle.out $(object) test/RleFileTEST.cpp
+
+test_ifiles: build/test_ifiles.out
+	./build/test_ifiles.out
+
+build/test_ifiles.out: $(object) test/IFilesTEST.cpp
+	g++ -g -o build/test_ifiles.out $(object) test/IFilesTEST.cpp
+
+# Запуск всех тестов
+test: test_base test_base32 test_rle test_ifiles
+
 #Утечка
 build/leaks.out: $(object) src/lab2.cpp
 	g++ -g -fsanitize=address -o build/leaks.out $(object) src/lab2.cpp

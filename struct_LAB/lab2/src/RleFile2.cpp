@@ -15,6 +15,14 @@ bool RleFile2::can_write() {
     return inner->can_write();
 }
 
+bool RleFile2::seek(long offset) {
+    return inner->seek(offset);
+}
+
+long RleFile2::tell(){
+    return inner->tell();
+}
+
 size_t RleFile2::write(const void* buf, size_t n_bytes) {
     const unsigned char* src = (const unsigned char*)buf;
     size_t i = 0;

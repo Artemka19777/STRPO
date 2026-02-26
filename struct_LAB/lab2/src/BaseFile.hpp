@@ -18,7 +18,7 @@ class BaseFile: public IFile{
         bool can_write();
         size_t write_raw(const void *buf, size_t n_bytes);
         size_t read_raw(void *buf, size_t max_bytes);
-        long tell() const;
+        long tell();
         bool seek(long offset);
         virtual size_t write(const void* buf, size_t n_bytes);
         virtual size_t read(void* buf, size_t max_bytes);//делаем виртуальными, чтобы переопределить

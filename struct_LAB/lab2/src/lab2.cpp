@@ -73,6 +73,9 @@ int main() {
             cout<<" ";
         }
         cout<<'\n';
+        for(int i = 0; i < sizeof(arPtr)/sizeof(MyString*); i++) {
+            delete arPtr[i];
+        }
     }
     /**
      * Задание 2. Простое наследование. Аргументы конструктора, передаваемые в

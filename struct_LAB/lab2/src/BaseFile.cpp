@@ -49,7 +49,7 @@ size_t BaseFile::read_raw(void* buf, size_t max_bytes) {
     if (!file) return 0;
     return fread(buf, 1, max_bytes, file);
 }
-long BaseFile::tell() const{
+long BaseFile::tell(){
     if (!file) return -1;
     return ftell(file);
 }

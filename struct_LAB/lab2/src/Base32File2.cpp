@@ -26,6 +26,14 @@ int Base32File2::get_index(char c) {
     return -1;
 }
 
+bool Base32File2::seek(long offset) {
+    return inner->seek(offset);
+}
+
+long Base32File2::tell() {
+    return inner->tell();
+}
+
 size_t Base32File2::write(const void* buf, size_t n_bytes) {
     if (!inner->can_write() || n_bytes == 0)
         return 0;
@@ -35,7 +43,7 @@ size_t Base32File2::write(const void* buf, size_t n_bytes) {
     unsigned int bit_buffer = 0;
     int bits = 0;
 
-    char encoded[2048];
+    char encoded[4096];
     size_t out = 0;
 
     for (size_t i = 0; i < n_bytes; i++) {
@@ -62,7 +70,7 @@ size_t Base32File2::read(void* buf, size_t max_bytes) {
     if (!inner->can_read() || max_bytes == 0)
         return 0;
 
-    char encoded[2048];
+    char encoded[4096];
     size_t read_bytes = inner->read(encoded, sizeof(encoded));
 
     unsigned char* dst = (unsigned char*)buf;
