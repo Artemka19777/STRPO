@@ -2,12 +2,13 @@
 #include <cstring>
 #include "IFile.hpp"
 
-Base32File2::Base32File2(IFile* file, const char* table): inner(file){
+Base32File2::Base32File2(IFile* file, const char* table): inner(file), bit_buffer(0), bits(0){
     strncpy(encode_table, table, 32);
     encode_table[32] = '\0';
 }
 
 Base32File2::~Base32File2() {
+    flush();
     delete inner;
 }
 
@@ -27,6 +28,7 @@ int Base32File2::get_index(char c) {
 }
 
 bool Base32File2::seek(long offset) {
+    flush();
     return inner->seek(offset);
 }
 
@@ -39,9 +41,6 @@ size_t Base32File2::write(const void* buf, size_t n_bytes) {
         return 0;
 
     const unsigned char* raw = (const unsigned char*)buf;
-
-    unsigned int bit_buffer = 0;
-    int bits = 0;
 
     char encoded[4096];
     size_t out = 0;
@@ -57,11 +56,8 @@ size_t Base32File2::write(const void* buf, size_t n_bytes) {
         }
     }
 
-    if (bits > 0) {
-        encoded[out++] =
-            encode_table[(bit_buffer << (5 - bits)) & 0x1F];
-    }
-
+    //убрал локальные переменные и добавил их в поля класса
+    //олтложил проверку на остаток битов в деструктор и метод seek(метод flush)
     inner->write(encoded, out);
     return n_bytes;
 }
@@ -95,4 +91,13 @@ size_t Base32File2::read(void* buf, size_t max_bytes) {
     }
 
     return out;
+}
+void Base32File2::flush() {
+    if (bits > 0) {
+        // дописываем последний символ
+        char last_char = encode_table[(bit_buffer << (5 - bits)) & 0x1F];
+        inner->write(&last_char, 1);
+        bit_buffer = 0;
+        bits = 0;
+    }
 }

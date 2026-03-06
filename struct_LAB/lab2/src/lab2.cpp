@@ -191,7 +191,7 @@ int main() {
     {
         const char* msg = "Hello!";
         char buf[100] = {0};
-        Base32File("test2", "w").write(msg, strlen(msg));
+        Base32File("data/test2", "w").write(msg, strlen(msg));
 
         BaseFile f_raw("data/test2", "r");
         f_raw.read_raw(buf, sizeof(buf));

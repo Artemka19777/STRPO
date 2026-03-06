@@ -8,6 +8,10 @@ private:
     IFile* inner;
     char encode_table[33];
     int get_index(char c);
+    unsigned int bit_buffer;
+    int bits;
+    //добавил поля для хранения состояния между вызовами write
+    void flush();
 
 public:
     Base32File2(IFile* file, const char* table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456");
