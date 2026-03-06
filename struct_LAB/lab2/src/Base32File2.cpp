@@ -42,6 +42,7 @@ size_t Base32File2::write(const void* buf, size_t n_bytes) {
 
     const unsigned char* raw = (const unsigned char*)buf;
 
+    const size_t buf_size=4096;
     char encoded[4096];
     size_t out = 0;
 
@@ -50,6 +51,10 @@ size_t Base32File2::write(const void* buf, size_t n_bytes) {
         bits += 8;
 
         while (bits >= 5) {
+            if(out == buf_size){
+                inner->write(encoded, out);
+                out=0;
+            }//оставил буфер фиксированного размера, и когда он заполняется, частично сгружаю
             encoded[out++] =
                 encode_table[(bit_buffer >> (bits - 5)) & 0x1F];
             bits -= 5;
@@ -58,7 +63,8 @@ size_t Base32File2::write(const void* buf, size_t n_bytes) {
 
     //убрал локальные переменные и добавил их в поля класса
     //олтложил проверку на остаток битов в деструктор и метод seek(метод flush)
-    inner->write(encoded, out);
+    if (out>0 )
+        inner->write(encoded, out);
     return n_bytes;
 }
 

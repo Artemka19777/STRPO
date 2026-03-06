@@ -6,9 +6,10 @@
 class BaseFile: public IFile{
     private:
         FILE* file;
+        char mode[8];
     public:
         BaseFile();
-        BaseFile(const char* path, const char* mode);
+        BaseFile(const char* path, const char* md);
         BaseFile(FILE* f);
         virtual ~BaseFile();/*Рекомендуется делать виртуальными деструкторы для того, чтобы гарантировать
 правильное освобождение памяти из-под динамического объекта,*/

@@ -4,15 +4,32 @@
 
 int main() {
     const char* filename = "data/test_rle_temp.txt";
-    const size_t DATA_SIZE = 50 * 1024;
+    const size_t DATA_SIZE = 1024;
     char* originalData = new char[DATA_SIZE];
     char* readData = new char[DATA_SIZE];
-
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
-
-    for (size_t i = 0; i < DATA_SIZE; ++i) {
-        originalData[i] = static_cast<char>(65 + (std::rand() % 26));
+    
+    srand(static_cast<unsigned>(time(nullptr)));
+    
+    size_t pos = 0;
+    int series_lengths[] = {1, 2, 5, 10, 20, 50, 100, 200, 255, 100, 50, 20, 10, 5, 2, 1};
+    int num_series = sizeof(series_lengths) / sizeof(series_lengths[0]);
+    int series_index = 0;
+    //добавил подряд идущие символы
+    while (pos < DATA_SIZE) {
+        int len = series_lengths[series_index % num_series];
+        series_index++;
+        
+        if (pos + len > DATA_SIZE) {
+            len = DATA_SIZE - pos;
+        }
+        
+        char c = 'A' + (rand() % 26);
+        
+        for (int i = 0; i < len; i++) {
+            originalData[pos++] = c;
+        }
     }
+    
     std::cout << "Generated " << DATA_SIZE << " bytes of random data" << std::endl;
 
     {
