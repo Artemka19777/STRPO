@@ -25,6 +25,8 @@ class Circle{
         bool operator==(const Circle& item);// перегружаем оператор для сравнения, нужен для поиска элементов, удаления
 
         double S() const;
+        double getRadius() const;
+        const Point& getCenter() const;
 };
 class List{
     private:
@@ -52,6 +54,9 @@ class List{
         void clear();
 
         void sort();
+        friend std::ostream& operator<<(std::ostream& os, const List& l);
+
+        void saveListToFile(const List& l);
+        void load_from_file(const std::string& filename);
 };
-std::ofstream& operator<<(std::ostream& os, const List& l);
 #endif
