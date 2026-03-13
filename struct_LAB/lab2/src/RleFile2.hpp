@@ -6,6 +6,9 @@
 class RleFile2 : public IFile {
 private:
     IFile* inner;
+    
+    unsigned char pending_value;
+    unsigned char pending_count;
 
 public:
     RleFile2(IFile* file);

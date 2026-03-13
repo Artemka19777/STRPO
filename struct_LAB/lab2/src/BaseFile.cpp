@@ -181,14 +181,14 @@ Base32File::~Base32File() {
 
 //RLE
 
-RleFile:: RleFile() : BaseFile() {
+RleFile:: RleFile() : BaseFile(),pending_value(0), pending_count(0) {
     //cout << "RleFile Конструктор по умолчанию" << '\n';
 
 }
-RleFile:: RleFile(const char* path, const char* mode) : BaseFile(path, mode) {
+RleFile:: RleFile(const char* path, const char* mode) : BaseFile(path, mode),pending_value(0), pending_count(0) {
     //cout << "RleFile Конструктор c параметрами" << '\n';
 }
-RleFile:: RleFile(FILE* f) : BaseFile(f) {
+RleFile:: RleFile(FILE* f) : BaseFile(f),pending_value(0), pending_count(0) {
     //cout << "RleFile Конструктор из FILE" << '\n';
 }
 
@@ -216,28 +216,27 @@ size_t RleFile::write(const void* buf, size_t n_bytes) {
 
 size_t RleFile::read(void* buf, size_t max_bytes) {
     if (!is_open() || max_bytes == 0) return 0;
+
     unsigned char* dst = (unsigned char*)buf;
     size_t total = 0;
 
-    while (total< max_bytes) {
-        unsigned char header[2];
-        if (read_raw(header, 2) < 2) break; 
-
-        unsigned char count = header[0];
-        unsigned char val = header[1];
-        // можно сделать проверку на вместимость, и если пара не вмещается откатываться
-        size_t can_write = max_bytes - total;
-
-        if (count > can_write) {
-            seek(tell() - 2);// откатываемся назад, чтобы прочитать эту пару снова
-            count = can_write;
+    while (total < max_bytes) {
+        if (pending_count > 0) {
+            dst[total++] = pending_value;
+            pending_count--;
+            continue;
         }
+        unsigned char header[2];
+        if (read_raw(header, 2) < 2)
+            break;
 
-        for (int i = 0; i < count; i++) {
-            dst[total++] = val;
-}
+        pending_count = header[0];
+        pending_value = header[1];
     }
+
     return total;
+    /* пришлось отказаться от прошлой идеи и добавить новые поля pending_value и pending_count
+     в файлы RLE, которые хранят состояние незаписанных байт */
 }
 
 RleFile::~RleFile() {

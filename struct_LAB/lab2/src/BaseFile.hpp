@@ -42,6 +42,9 @@ class Base32File: public BaseFile{//используем ключ доступа
 
 
 class RleFile: public BaseFile{
+    private:
+        unsigned char pending_value;
+        unsigned char pending_count;
     public:
         RleFile();
         RleFile(const char* path, const char* mode);

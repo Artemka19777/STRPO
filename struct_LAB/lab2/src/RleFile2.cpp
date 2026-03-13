@@ -1,7 +1,7 @@
 #include "RleFile2.hpp"
 #include "IFile.hpp"
 
-RleFile2::RleFile2(IFile* file) : inner(file) {}
+RleFile2::RleFile2(IFile* file) : inner(file),pending_value(0), pending_count(0) {}
 
 RleFile2::~RleFile2() {
     delete inner;
@@ -48,16 +48,18 @@ size_t RleFile2::read(void* buf, size_t max_bytes) {
     size_t total = 0;
 
     while (total < max_bytes) {
+        if (pending_count > 0) {
+            dst[total++] = pending_value;
+            pending_count--;
+            continue;
+        }
+
         unsigned char pair[2];
         if (inner->read(pair, 2) < 2)
             break;
 
-        unsigned char count = pair[0];
-        unsigned char value = pair[1];
-
-        for (int i = 0; i < count && total < max_bytes; i++) {
-            dst[total++] = value;
-        }
+        pending_count = pair[0];
+        pending_value = pair[1];
     }
 
     return total;
