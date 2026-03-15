@@ -4,34 +4,75 @@
 
 WorkerData:: WorkerData():name(""), age(0){};
 WorkerData:: WorkerData(const MyString& n, int a):name(n), age(a){};
-WorkerDb::WorkerDb() {}
+WorkerDb::WorkerDb() {
+    capacity = 101;
+    count = 0;
+    db = new Entry* [capacity];
+    for(int i = 0; i<capacity; i++)
+        db[i] = nullptr;
+}
 WorkerDb::~WorkerDb(){
+    for(int i = 0; i<capacity; i++){
+        Entry* cur = db[i];// проходимся по каждому связанному списку
+        while(cur){
+            Entry* tmp = cur;
+            cur= cur->next;
+            delete tmp;
+        }    
+    }
     delete[] db;
 }
-WorkerData& WorkerDb::operator[](const MyString& surname){
-    for(int i = 0; i<count;i++){
-        if(db[i].surname == surname){
-            return db[i].data;
-        }
+unsigned int WorkerDb::hash(const MyString& surname) const{
+    const char* str = surname.get_data();
+    unsigned int h = 0;
+    while(*str){
+        h = h*31+static_cast<unsigned int>(*str);
+        str++;
     }
-    Entry* new_db = new Entry[count+1];//если в базе данных не оказалось работника, нужно создать объект
-    for(int i = 0; i<count;i++){
-        new_db[i]=std::move(db[i]);//пользуемся move семантикой, чтобы не тратить ресурсы на копирование
+    return h % capacity;
+}
+WorkerData& WorkerDb::operator[](const MyString& surname){ 
+    //реализовал хэш таблицу, теперь поиск выполняется за O(1), было за O(n)
+    unsigned int h = hash(surname);
+    Entry* cur = db[h];
+    while(cur){
+        if(cur->surname == surname)
+            return cur->data;
+        cur->next;
     }
-    new_db[count].surname=surname;
-    delete[] db;
-    db=new_db;
+    //если на нашли элемент, нужно создать новый
+    Entry* e = new Entry;
+    e->surname= surname;
+    e->data=WorkerData();
+    e->next = db[h];// фактически ставим новый элемент в начало спсика, и говорим, что следующий элемент для него это первый
+
+    db[h] = e;// обновляем значение, теперь значение хэша указывает на 1 элемент
+
     count++;
-    return db[count-1].data;//возваращем структуру  
+    return e->data;
 }
 
-WorkerDb::Iterator:: Iterator(Entry* p): ptr(p){} 
+WorkerDb::Iterator:: Iterator(Entry** d, int cap, int b, Entry* p){
+    db=d;
+    capacity = cap;
+    bucket = b;
+    ptr= p;
+
+} 
+
 
 WorkerDb::Iterator WorkerDb::begin(){//WorkerDb::Iterator - тип возвращаемого значенияЮ обхект класса итератор, но сам метод нахожится не внутри Iterator
-    return Iterator(db);//db - тип Entry - указатель на динамический массив работников
+    int b = 0;
+    Entry* p = nullptr;
+    while(b<capacity && db[b] == nullptr){
+        b++;
+    }// идем до первого связанного списка
+    if(b<capacity)
+        p=db[b];
+    return Iterator(db, capacity, b, p);//db - тип Entry - указатель на динамический массив работников
 }
 WorkerDb::Iterator WorkerDb::end(){//нужно чтобы указывала на элемент после последнего, т.е. который не вхожит в массив
-    return Iterator(db+count);
+    return Iterator(db, capacity, capacity, nullptr);
 }
 MyString WorkerDb::Iterator::key() const{
     return ptr->surname;
@@ -43,12 +84,18 @@ WorkerData& WorkerDb::Iterator::operator*() {
     return ptr->data;
 }
 WorkerDb::Iterator& WorkerDb::Iterator::operator++() {
-    ptr++; // Просто сдвигаем указатель на следующий Entry
+    if (ptr)
+        ptr = ptr->next; // есил в связанном списке есть еще элементы то переходим на них
+    if (ptr == nullptr){
+        bucket++;
+        move_next();
+    }
+    
     return *this;
 }
 WorkerDb::Iterator WorkerDb::Iterator::operator++(int) {
     Iterator temp = *this; //запоминаем старое состояние
-    ptr++;      
+    ++(*this);      
     return temp;// возвращаем старое состояние
 }
 bool WorkerDb::Iterator::operator!=(const Iterator& other) const {
@@ -73,4 +120,12 @@ double get_avg_age(WorkerDb& db){
     if (!count)
         return 0.0;
     return ans/count;
+}
+
+void WorkerDb::Iterator:: move_next(){
+    while(bucket<capacity && ptr == nullptr){// идем по связанным спискам пока не найдем первый ненулевой указатель
+        ptr = db[bucket];
+        if (ptr == nullptr)
+            bucket++;
+    }
 }

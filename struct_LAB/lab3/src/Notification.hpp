@@ -59,6 +59,11 @@ class NotificationQueue{
         int capacity;
         int Nsize;
 
+        //реализую очередь для того, чтобы удаление было не O(n), а O(1)
+        int head;//начало
+        int tail;//конец, место вставки
+
+
         void reserve(int newCapacity);// метод для расширения памяти;
     public:
         NotificationQueue();
@@ -69,13 +74,26 @@ class NotificationQueue{
         Notification* begin();
         Notification* end();
 };
-class NotificationPriorityQueue : public NotificationQueue {//наследуем от прошлого класса, чтобы не переписывать методы
+class NotificationPriorityQueue {//больше не наследую от класса, т.к. у классов разные структуры данных 
     private:
+        Notification* data;
+        int capacity;
+        int Nsize;
+        void reserve(int newCapacity);
+
+        //вспомагательные методы для того, чтобы ставить элементы дерева на свои места
+        void siftup(int i);
+        void siftdown(int i);
+
         bool better(const Notification& a, const Notification& b) const;
         bool isUrgentSystem(const Notification& n) const;
         int typePriority(NotType t) const;
     public:
+        NotificationPriorityQueue();
+        ~NotificationPriorityQueue();
+
         Notification pop();
+        void push(const Notification& note);
 
 };
 #endif

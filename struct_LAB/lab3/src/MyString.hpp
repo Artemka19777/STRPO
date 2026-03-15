@@ -5,6 +5,7 @@ class MyString{
     private:
         char* data;
         int len;
+        MyString& concat(const char* data, int length);
     public:
         MyString();
         MyString(const char* str);
@@ -39,6 +40,8 @@ class MyString{
         bool operator<=(const MyString& other) const; 
 
         char& operator[](int n);
+
+        MyString (const char* data, int length);
 };
 MyString operator+(const char* str, const MyString& s);
 

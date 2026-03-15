@@ -26,7 +26,7 @@ class Matrix{
         int get_height()const;
         int get_width()const;
         void negate();
-        void add_in_place(Matrix &other);
+        void add_in_place(const Matrix &other);
         Matrix multiply(const Matrix &other) const;
 
         Matrix(Matrix&& other);

@@ -80,18 +80,10 @@ MyString& MyString::operator=(const MyString& other) {
 }
 //lab3
 MyString& MyString::operator+=(const MyString& other){
-    int new_len=len + other.len;
-    char* new_data = new char[new_len+1];
-    if (data) strcpy(new_data, data);// копируем старое
-    if (other.data) strcpy(new_data + len, other.data);// дописываем новое
-    delete[] data;
-    data=new_data;
-    len=new_len;
-    return *this;
-
+    return concat(other.data, other.len);
 }
 MyString& MyString::operator+=(const char* str){
-    return *this +=MyString(str);
+    return concat(str, strlen(str));//перенес реализацию из прошлого метода в concat, применил его в обоих случиях
 }
 MyString MyString::operator+(const MyString& other)const{
     MyString res(*this);
@@ -205,3 +197,13 @@ std::istream& operator>>(std::istream& is, MyString& s) {
     return is;
 }
 MyString addTxtExtension(const MyString &path) { return path + ".txt"; };
+MyString& MyString::concat(const char* s, int l){
+    int new_len=len + l;
+    char* new_data = new char[new_len+1];
+    if (data) strcpy(new_data, data);// копируем старое
+    strncpy(new_data + len, s, l);// дописываем новое
+    delete[] data;
+    data=new_data;
+    len=new_len;
+    return *this;
+}

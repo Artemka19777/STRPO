@@ -115,7 +115,7 @@ Notification& Notification::operator=(const Notification& other) {
 
     return *this;
 }
-NotificationQueue:: NotificationQueue():data(nullptr), capacity(0), Nsize(0){};
+NotificationQueue:: NotificationQueue():data(nullptr), capacity(0), Nsize(0), head(0), tail(0){};
 NotificationQueue::~NotificationQueue() {
     delete[] data; 
 }
@@ -123,40 +123,40 @@ int NotificationQueue::size() const{
     return Nsize;
 }
 Notification* NotificationQueue::begin(){
-    return data;
+    return data+head;//нужно поменять относительно чего ведется отсчет
 }
 Notification* NotificationQueue::end(){
-    return data + Nsize;
+    return data + Nsize+head;
 }
 void NotificationQueue::reserve(int newCapacity) {
     if (newCapacity <= capacity) 
         return;
     Notification* newData = new Notification[newCapacity];
     for (int i = 0; i < Nsize; ++i) {
-        newData[i] = data[i]; 
+        newData[i] = data[(head+i)%capacity]; 
     }
 
     delete[] data;
     data = newData;
     capacity = newCapacity;
+    head=0;
+    tail=Nsize;
 }
 
 void NotificationQueue::push(const Notification& note) {
     if (Nsize == capacity) {//если количество элементов сравнялось с памятью, выделяем новую
         reserve(capacity == 0 ? 4 : capacity * 2);// проверка на случай, если память не выделяли
     }
-    data[Nsize++] = note;
+    data[tail] = note; // ставим на свободное место элемент
+    tail = (tail + 1)%capacity;
+    Nsize++;
 }
 Notification NotificationQueue::pop() {
     if (Nsize == 0) 
         return Notification(); 
 
-    Notification front = data[0]; //копируем первый элемент
-    // сдвигаем все элементы влево 
-    for (int i = 0; i < Nsize - 1; ++i) {
-        data[i] = data[i + 1];
-    }
-
+    Notification front = data[head]; //копируем первый элемент
+    head = (head + 1) %capacity;// передвигаем начало, тем самымй освобождая элемент и teil теперь сможет встать на это место, так как реализован с %
     Nsize--;
     return front;
 }
@@ -194,25 +194,65 @@ bool NotificationPriorityQueue::better(const Notification& a, const Notification
     return false;
 }
 Notification NotificationPriorityQueue::pop() {
-
-    Notification* arr = begin();
-    int n = size();
-
-    if (n == 0)
+    //реализовал кучу(heap), теперь поиск за O(log n), был за O(n)
+    if (Nsize == 0)
         return Notification();
-
-    int best = 0;
-    for (int i = 1; i < n; i++) {
-        if (better(arr[i], arr[best]))//Ищем самое приоритетное
-            best = i;
-    }
-    Notification result = arr[best];
-    for (int i = best; i < n - 1; i++) {
-        arr[i] = arr[i + 1];
-    }
-
-    // уменьшаем размер очереди
+    Notification res = data[0]; // запоминаем вершину, чтобы вернуть
+    data[0] = data[Nsize-1];
     Nsize--;
-
-    return result;
+    if(Nsize>0)
+        siftdown(0);// продвигаем вниз последний элемент, который мы поставили в вершину
+    return res;
 }
+//NotificationPriorityQueue
+void NotificationPriorityQueue::reserve(int newCapacity) {
+    if (newCapacity <= capacity) 
+        return;
+    Notification* newData = new Notification[newCapacity];
+    for (int i = 0; i < Nsize; ++i) {
+        newData[i] = data[i]; 
+    }
+
+    delete[] data;
+    data = newData;
+    capacity = newCapacity;
+}
+void NotificationPriorityQueue::siftdown(int i){
+    while(2*i+1< Nsize){ // пока есть потомок
+        int l = 2*i + 1;
+        int r = 2*i + 2;
+        int best = i;
+        //нужно сравнить двух потомков с лучшим вариантом, нельзя поставить первый попавшийся элемент
+        if (l<Nsize && better(data[l], data[i])){
+            best = l;
+        }
+        if (r<Nsize && better(data[r], data[best])){
+            best = r;
+        }
+        if (best == i)
+            break;
+        swap(data[i], data[best]);
+        i = best;// продолжаем с позиции, в которую переместился элемент
+    }
+}
+void NotificationPriorityQueue::siftup(int i){
+    while(i>0){  // в вершине самое приоритетное уведомление
+        int p = (i - 1)/2;
+        if (better(data[i], data[p])){
+            swap(data[i], data[p]);
+            i=p;//ставим элемент на место родителя
+        } else
+            break;
+    }
+}
+
+void NotificationPriorityQueue::push(const Notification& note){
+    if (Nsize == capacity) //если количество элементов сравнялось с памятью, выделяем новую
+        reserve(capacity == 0 ? 4 : capacity * 2);// проверка на случай, если память не выделяли
+    data[Nsize] = note;
+    siftup(Nsize);//продвигаем вверх новый элемент
+    Nsize++;    
+}
+
+NotificationPriorityQueue::NotificationPriorityQueue():data(nullptr), capacity(0),Nsize(0){}
+NotificationPriorityQueue::~NotificationPriorityQueue(){delete[] data;}

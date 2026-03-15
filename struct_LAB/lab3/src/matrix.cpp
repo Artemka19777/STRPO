@@ -46,7 +46,7 @@ void Matrix::negate(){
         data[i]=-data[i];
     }
 }
-void Matrix::add_in_place(Matrix &other){
+void Matrix::add_in_place(const Matrix &other){
     if (rows != other.rows || cols != other.cols)
         throw runtime_error("Не проходит по размеру");
     for(int i = 0;i<rows*cols;i++)
@@ -84,11 +84,7 @@ Matrix& Matrix::operator=(const Matrix& other)//прописываем опер�
 }
 //lab3
 Matrix& Matrix::operator+=(const Matrix& other){
-    if( rows != other.rows || cols != other.cols)
-        throw runtime_error("Не проходит по размеру");
-    for(int i=0; i<rows*cols;i++){
-        data[i]+=other.data[i];
-    }
+    add_in_place(other);//моя функция полностью повторяла код add_in)place
     return *this;
 }
 Matrix& Matrix::operator-=(const Matrix& other){
