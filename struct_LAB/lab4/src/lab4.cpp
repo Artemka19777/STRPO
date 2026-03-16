@@ -1,5 +1,6 @@
 #include "Circle.hpp"
 #include <iostream>
+#include <fstream> 
 
 int main() {
 
@@ -47,7 +48,9 @@ int main() {
     std::cout << l << '\n';
 
     // сохранение в файл
-    l.saveListToFile(l);
+    std::ofstream fout("circles.txt");
+    l.saveListToFile(fout);
+    fout.close();
 
     // очистка
     std::cout << "Clearing list\n";
@@ -56,11 +59,9 @@ int main() {
     std::cout << l << '\n';
 
     // загрузка из файла
-    std::string filename;
-    std::cout << "Enter file name to load: ";
-    std::cin >> filename;
-
-    l.load_from_file(filename);
+    std::ifstream fin("circles.txt");
+    l.load_from_file(fin);
+    fin.close();
 
     std::cout << "List after loading from file:\n";
     std::cout << l << std::endl;

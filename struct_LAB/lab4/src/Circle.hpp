@@ -43,9 +43,18 @@ class List{
         Node Head;
         Node Tail;
         size_t m_size;
+
+        //вспомагательные методы для сортирвоки 
+        Node* split(Node* head);
+        Node* merge(Node* left, Node* right);
+        Node* mergeSort(Node* head);
     public:
         List();
         ~List();
+
+        //добавил конструктор копирования и оператор присваивания
+        List(const List& other);
+        List& operator=(const List&other);
 
         void push_front(const Circle& item);
         void push_back(const Circle& item);
@@ -56,7 +65,7 @@ class List{
         void sort();
         friend std::ostream& operator<<(std::ostream& os, const List& l);
 
-        void saveListToFile(const List& l);
-        void load_from_file(const std::string& filename);
+        void saveListToFile(std::ostream& os) const;
+        void load_from_file(std::istream& is);
 };
 #endif

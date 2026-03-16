@@ -26,7 +26,7 @@ List::Node:: Node(Node* prev, Node* next, const Circle* item):pPrev(prev), pNext
     if (prev)//теперь нужно соединить элементы с действующим объектом, обновить указатели для них
         prev->pNext = this;
     if (next)
-        pNext->pPrev = this;
+        next->pPrev = this;
 }
 List::Node:: ~Node(){
     if (pPrev) pPrev->pNext = pNext;// соединяем предыдущий и следующий
@@ -88,17 +88,6 @@ void List::clear() {
     Tail.pPrev = &Head;
     m_size = 0;
 }
-void List::sort(){
-    for(size_t j = 0; j<m_size-1;j++){
-        for(Node* i = Head.pNext; i->pNext!=&Tail; i=i->pNext){
-            if (i->m_Data.S()> i->pNext->m_Data.S()){
-                Circle temp = i->m_Data;
-                i->m_Data=i->pNext->m_Data;
-                i->pNext->m_Data = temp;
-            }
-        }
-    }
-}
 std::ostream& operator<<(std::ostream& os, const List& l){
     List::Node* curr = l.Head.pNext;
     while (curr != &l.Tail) {
@@ -109,40 +98,96 @@ std::ostream& operator<<(std::ostream& os, const List& l){
     }
     return os;
 }
-void List::saveListToFile(const List& l) {
-    char ar[80];
-    std::cout << "Enter Output File Name - ";
-    std::cin >> ar;
-
-    std::ofstream fout(ar);
-
-    if (!fout.is_open()) {
-        std::cerr << "Error\n";
-        return;
-    }
-
-    for (Node* curr = l.Head.pNext; curr != &l.Tail; curr = curr->pNext) {
-        fout << curr->m_Data.getCenter().getX() << " "
+void List::saveListToFile(std::ostream& os) const{
+    for (Node* curr = Head.pNext; curr != &Tail; curr = curr->pNext) {
+        os << curr->m_Data.getCenter().getX() << " "
              << curr->m_Data.getCenter().getY() << " "
              << curr->m_Data.getRadius() << "\n";// не стал использовать перегруженный оператор << т.к. в таком формате можно загружать и считывать информацию из одного файла
 
     }
-
-    fout.close();
-    std::cout << "Saved to file: " << ar << '\n';
 }
-void List::load_from_file(const std::string& filename) {
-    std::ifstream fin(filename);
-    
-    if (!fin.is_open()) {
-        std::cerr << "Error" << filename << '\n';
-        return;
-    }
-    clear(); 
+void List::load_from_file(std::istream& is) {
+    clear();
+
     double x, y, r;
-    while (fin >> x >> y >> r) {
+
+    while (is >> x >> y >> r) {
         push_back(Circle(Point(x, y), r));
     }
+}
+List::List(const List& other){
+    for(Node* i = other.Head.pNext; i!= &other.Tail; i=i->pNext){
+        push_back(i->m_Data);
+    }
+}
 
-    fin.close();
+List& List::operator=(const List& other){
+    if (this == &other)
+        return *this;
+    
+    clear();
+
+    for(Node* i = other.Head.pNext; i!= &other.Tail; i=i->pNext){
+        push_back(i->m_Data);
+    }
+    return *this;
+}
+//сортировка
+List::Node* List::split(Node* head){
+    //левая граница идет с шагом 1, правая с шагом 2
+    Node* l = head;
+    Node* r = head;
+    while(r->pNext!=&Tail && r->pNext->pNext!=&Tail){
+        r = r->pNext->pNext;
+        l= l->pNext;
+    }
+    Node* mid = l->pNext;
+    l->pNext=&Tail;
+    return mid;
+}
+List::Node* List::merge(Node* left, Node* right){
+    Node merged;
+    Node* tail = &merged;//указывает на последний отсортированный элемент
+    while (left != &Tail && right != &Tail){
+        if(left->m_Data.S()<=right->m_Data.S()){
+            tail->pNext = left;
+            left->pPrev = tail;
+            left = left->pNext;
+            //связали последний отсортированный элемент с только что добавленным и переместили left на следуюших элемент
+        } else{
+            tail->pNext = right;
+            right->pPrev = tail;
+            right = right -> pNext;
+        }
+        tail= tail->pNext;
+    }
+    if (left != &Tail) tail->pNext = left;
+    if (right != &Tail) tail->pNext = right;
+    return merged.pNext;
+}
+List::Node* List::mergeSort(Node* head) {
+    if (head == &Tail || head->pNext == &Tail)
+        return head;
+    Node* mid = split(head);
+    Node* left = mergeSort(head);
+    Node* right = mergeSort(mid);
+
+    return merge(left, right);
+}
+void List::sort(){
+    if (m_size < 2) return;
+
+    Head.pNext->pPrev = &Head;
+    Node* newHead = mergeSort(Head.pNext);
+    
+    Head.pNext = newHead;
+    Node* curr = Head.pNext;
+    curr->pPrev = &Head;
+
+    while (curr->pNext != &Tail)
+    {
+        curr->pNext->pPrev = curr;
+        curr = curr->pNext;
+    }
+    Tail.pPrev = curr;
 }
