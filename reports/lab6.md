@@ -89,22 +89,35 @@ git remote add server ../server
 Конвертировать Markdown в HTML можно через утилиту **pandoc**
 
 ```
+#!/bin/bash
+
 while read oldrev newrev refname
 do
-    if [[ $refname = "refs/heads/lab6" ]]; then
-        echo "Post-receive hook: Push detected in lab6 branch. Building HTML report..."
+    if [[ $refname == "refs/heads/lab6-pr" ]]; then
+        echo "Post-receive hook: Push detected in lab6-pr branch. Building HTML report..."
 
         REPORT_FILE="report.md"
         OUTPUT_HTML="report.html"
 
-        git show $newrev:$REPORT_FILE | pandoc -f markdown -t html --self-contained -o ../server>
+        git show $newrev:$REPORT_FILE | pandoc -f markdown -t html --self-contained -o ../../$OUTPUT_HTML
 
         if [ $? -eq 0 ]; then
-            echo "HTML report generated successfully: $OUTPUT_HTML"
+            echo "HTML report generated successfully: ../../$OUTPUT_HTML"
         else
             echo "Error: Failed to generate HTML report."
             exit 1
         fi
     fi
 done
+```
+Вывод на консоли при пуше:
+```
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 1.08 KiB | 110.00 KiB/s, done.
+Total 4 (delta 3), reused 0 (delta 0), pack-reused 0
+To ../server
+   1f82422..6b3a9a2  lab6-pr -> lab6-pr
 ```
