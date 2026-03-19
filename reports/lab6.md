@@ -121,4 +121,4 @@ Total 4 (delta 3), reused 0 (delta 0), pack-reused 0
 To ../server
    1f82422..6b3a9a2  lab6-pr -> lab6-pr
 ```
-файл отображается
+файл отображается.
