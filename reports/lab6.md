@@ -72,3 +72,39 @@ Commit message too short!
 Checking for forbidden patterns...
 ERROR: Forbidden content detected in reports/lab6.md
 ```
+Из-за того, что я приводил в отчете код bash, где пропписаны запрещенные слова, мне не удавалось сделать коммит, пришлось удалить некоторые строчки кода.
+
+### Хуки Git на стороне сервера
+```
+cd ..
+artem@DESKTOP-3R7C7GG /mnt/d  $ git clone ./STRPO ./server
+```
+Далее переходим в основном репозиторий и добавляем сервер как удаленный репозиторий 
+```
+git remote add server ../server
+```
+Теперь можно делать push 
+` git psuh server main`
+
+Конвертировать Markdown в HTML можно через утилиту **pandoc**
+
+```
+while read oldrev newrev refname
+do
+    if [[ $refname = "refs/heads/lab6" ]]; then
+        echo "Post-receive hook: Push detected in lab6 branch. Building HTML report..."
+
+        REPORT_FILE="report.md"
+        OUTPUT_HTML="report.html"
+
+        git show $newrev:$REPORT_FILE | pandoc -f markdown -t html --self-contained -o ../server>
+
+        if [ $? -eq 0 ]; then
+            echo "HTML report generated successfully: $OUTPUT_HTML"
+        else
+            echo "Error: Failed to generate HTML report."
+            exit 1
+        fi
+    fi
+done
+```
