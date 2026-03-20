@@ -223,3 +223,25 @@ All tests passed
 [dev 9d356b6] commit in branch dev
  1 file changed, 24 insertions(+), 1 deletion(-)
 ```
+Добавим хук `post-commit`
+```
+#!/bin/bash
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$branch" = "dev" ]; then
+    echo "Building library..."
+    
+    repo_root=$(git rev-parse --show-toplevel)
+
+    cd "$repo_root/lab6" || exit 1
+
+    mkdir -p build
+    cd build || exit 1
+
+    cmake ..
+    make
+
+    echo "Library build finished"
+fi
+```
