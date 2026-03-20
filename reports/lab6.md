@@ -274,3 +274,42 @@ Jcyjdy
   под-ключ: значение  
 
 Источник: [skillfactory](https://blog.skillfactory.ru/glossary/yaml/)
+
+`GitHub Actions` — это CI/CD система, которая позволяет:
+
+- Автоматически собирать проект.
+- Запускать тесты
+- Работает по триггерам: push, PR
+
+Создал папку `.github/workflows/` в корне и добавил файл `ci.yml`
+
+Настроил пайплайн которыц запускает тесты и собирает бибилиотеку при push или PR
+```
+name: Cmake
+
+on: #список триггеров
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+#теперь нужно прописать, что необходимо выполнить, при срабатывании триггеров
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  #указывает на какой платформе запускать
+    #github предлагает ограниченное количество ресурсов на запуск, но запускать модно и на своей платформе
+    defaults:
+      run:
+        working-directory: struct_LAB/lab1
+    steps: #последовательность команд, которые нужно выполнить
+      - name: Checkout repository
+      uses: actions/checkout@v3 #используем готовый action из магазина github
+      #Далее пишем свои шаги
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake make g++
+
+      - name: Build project
+        run: cmake . && make
+
+      - name: Run tests
+        run: ctest --output-on-failure
+```
