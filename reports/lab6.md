@@ -313,3 +313,5 @@ jobs:
       - name: Run tests
         run: ctest --output-on-failure
 ```
+Изначало Actions не выполнялось, т.к. были синтаксические ошибки в файле `ci.yml`, но потом все заработало
+![](/reports/imgs/62.png) 
