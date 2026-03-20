@@ -197,3 +197,29 @@ if [ "$branch" = "dev" ]; then
     echo "All tests passed"
 fi
 ```
+теперь при коммите выдает следущее:
+```
+git commit -m"commit in branch dev"
+Checking for forbidden patterns...
+Check passed
+Running CMake tests...
+-- Configuring done (0.1s)
+...
+[100%] Built target test_rect_properties
+Test project /mnt/d/STRPO/struct_LAB/lab1/build
+    Start 1: test_bounding_rect
+1/4 Test #1: test_bounding_rect ...............   Passed    0.01 sec
+    Start 2: test_rect_basic_methods
+2/4 Test #2: test_rect_basic_methods ..........   Passed    0.01 sec
+    Start 3: test_rect_operations
+3/4 Test #3: test_rect_operations .............   Passed    0.01 sec
+    Start 4: test_rect_properties
+4/4 Test #4: test_rect_properties .............   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 4
+
+Total Test time (real) =   0.08 sec
+All tests passed
+[dev 9d356b6] commit in branch dev
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+```
