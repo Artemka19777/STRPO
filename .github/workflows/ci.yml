@@ -8,11 +8,11 @@ on: #список триггеров
 #теперь нужно прописать, что необходимо выполнить, при срабатывании триггеров
 jobs:
   build-and-test:
-    runs-on: ubuntu_latest  #указывает на какой платформе запускать
+    runs-on: ubuntu-latest  #указывает на какой платформе запускать
     #github предлагает ограниченное количество ресурсов на запуск, но запускать модно и на своей платформе
     defaults:
       run:
-        working-directory:struct_LAB/lab1
+        working-directory: struct_LAB/lab1
     steps: #последовательность команд, которые нужно выполнить
       - name: Checkout repository
       uses: actions/checkout@v3 #используем готовый action из магазина github
