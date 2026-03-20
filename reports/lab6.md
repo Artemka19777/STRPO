@@ -174,3 +174,26 @@ To ../server
     ```
 * запустить `./lab1`
 * `ctest`
+### Автоматизация задач CMake в git
+Ответвился от ветки lab6-pr, чтобы остались наработки. 
+
+Добавил к предыдущему хуку `pre-commit` код, который запускает тесты через `ctest`: 
+```
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$branch" = "dev" ]; then
+    echo "Running CMake tests..."
+
+    repo_root=$(git rev-parse --show-toplevel)
+    cd "$repo_root/struct_LAB/lab1" || exit 1
+
+    mkdir -p build
+    cd build || exit 1
+
+    cmake ..
+    make
+    ctest || { echo "Tests failed. Commit aborted."; exit 1; }
+
+    echo "All tests passed"
+fi
+```
