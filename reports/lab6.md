@@ -265,12 +265,38 @@ Library build finished
 ### Автоматизация с помощью Github Actions
 
 **YAML** — это язык разметки, который используют для конфигурации (например, в GitHub Actions).
-Jcyjdy
-ключ: значение           # простой параметр
-ключ:
-  - список
-  - элементов
-ключ:
-  под-ключ: значение  
+
+можно использовать следующие конструкции:
+* скалярные типы
+    ```
+    string: "Hello World"
+    integer: 42
+    float: 3.14
+    boolean: true
+    ```
+* словари 
+    ```
+    person:
+    name: John
+    age: 30
+    city: Moscow
+  ```
+* списки
+    ```
+    fruits:
+  - apple
+  - banana
+  - orange
+  ```
+
+
 
 Источник: [skillfactory](https://blog.skillfactory.ru/glossary/yaml/)
+
+`GitHub Actions` — это CI/CD система, которая позволяет:
+
+- Автоматически собирать проект.
+- Запускать тесты
+- Работает по триггерам: push, PR
+
+Создал папку `.github/workflows/` в корне и добавил файл `ci.yml`
