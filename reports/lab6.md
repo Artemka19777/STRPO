@@ -174,3 +174,4 @@ To ../server
     ```
 * запустить `./lab1`
 * `ctest`
+dsfnjnsdfdnkfnkdsj
