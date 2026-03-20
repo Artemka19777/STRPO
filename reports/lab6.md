@@ -231,10 +231,10 @@ branch=$(git rev-parse --abbrev-ref HEAD)
 
 if [ "$branch" = "dev" ]; then
     echo "Building library..."
-    
+
     repo_root=$(git rev-parse --show-toplevel)
 
-    cd "$repo_root/lab6" || exit 1
+    cd "$repo_root/struct_LAB/lab1" || exit 1
 
     mkdir -p build
     cd build || exit 1
@@ -245,3 +245,32 @@ if [ "$branch" = "dev" ]; then
     echo "Library build finished"
 fi
 ```
+Вывод:
+```
+Building library...
+-- Configuring done (0.0s)
+-- Generating done (0.2s)
+-- Build files have been written to: /mnt/d/STRPO/struct_LAB/lab1/build
+[ 37%] Built target lab1_library
+[ 50%] Built target lab1
+[ 62%] Built target test_bounding_rect
+[ 75%] Built target test_rect_basic_methods
+[ 87%] Built target test_rect_operations
+[100%] Built target test_rect_properties
+Library build finished
+[dev d61cdb6] commit for check hook
+ 1 file changed, 22 insertions(+)
+```
+
+### Автоматизация с помощью Github Actions
+
+**YAML** — это язык разметки, который используют для конфигурации (например, в GitHub Actions).
+Jcyjdy
+ключ: значение           # простой параметр
+ключ:
+  - список
+  - элементов
+ключ:
+  под-ключ: значение  
+
+Источник: [skillfactory](https://blog.skillfactory.ru/glossary/yaml/)
