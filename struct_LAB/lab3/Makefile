@@ -22,11 +22,15 @@ build/BaseFile.o: src/BaseFile.hpp src/BaseFile.cpp
 build/BoolArray.o: src/BoolArray.hpp src/BoolArray.cpp
 	g++ -c -o build/BoolArray.o src/BoolArray.cpp
 
+build/test_db.out: build/WorkerDb.o test/test_db.cpp
+	g++ -g -o build/test_db.out test/test_db.cpp build/WorkerDb.o build/Notification.o build/MyString.o
+
 build/test_priority.out: build/Notification.o test/test_priority.cpp build/MyString.o
 	g++ -g -o build/test_priority.out test/test_priority.cpp build/Notification.o build/MyString.o
 
-test: build/test_priority.out 
+test: build/test_priority.out build/test_db.out
 	./build/test_priority.out
+	./build/test_db.out
 
 debug: build/debug.out
 	gdb build/debug.out

@@ -29,16 +29,18 @@ unsigned int WorkerDb::hash(const MyString& surname) const{
         h = h*31+static_cast<unsigned int>(*str);
         str++;
     }
-    return h % capacity;
+    return h;
 }
 WorkerData& WorkerDb::operator[](const MyString& surname){ 
     //реализовал хэш таблицу, теперь поиск выполняется за O(1), было за O(n)
-    unsigned int h = hash(surname);
+    if (count > capacity * 0.75)
+        rehash();
+    unsigned int h = hash(surname)%capacity;
     Entry* cur = db[h];
     while(cur){
         if(cur->surname == surname)
             return cur->data;
-        cur->next;
+        cur = cur->next;
     }
     //если на нашли элемент, нужно создать новый
     Entry* e = new Entry;
@@ -128,4 +130,25 @@ void WorkerDb::Iterator:: move_next(){
         if (ptr == nullptr)
             bucket++;
     }
+}
+void WorkerDb::rehash(){
+    int new_capacity = capacity * 2;
+    Entry ** new_db = new Entry*[new_capacity];
+     for (int i = 0; i < new_capacity; i++) {
+        new_db[i] = nullptr;
+    }
+    for(int i = 0; i <capacity;i++){
+        Entry* cur = db[i];
+        while(cur){
+            Entry* next  = cur->next;
+
+            int new_index = hash(cur->surname)%new_capacity;
+            cur->next = new_db[new_index];
+            new_db[new_index] = cur;
+            cur = next;
+        }
+    }
+    delete[] db;
+    db = new_db;
+    capacity = new_capacity;
 }

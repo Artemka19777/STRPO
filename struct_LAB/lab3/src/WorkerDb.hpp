@@ -23,6 +23,7 @@ class WorkerDb{
         int count;
         int capacity;
         unsigned int hash(const MyString& surname) const;
+        void rehash(); // расширение хэш таблицы
     public:
         class Iterator{//не стал делать через дружественный класс в целях инкапсуляции и простоты
             private:
